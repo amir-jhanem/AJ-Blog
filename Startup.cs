@@ -1,3 +1,4 @@
+using aj_blog.HubConfig;
 using AJ_Blog.Core;
 using AJ_Blog.Persistence;
 using AutoMapper;
@@ -30,6 +31,16 @@ namespace aj_blog
 
             services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the Angular files will be served from this directory
@@ -57,6 +68,11 @@ namespace aj_blog
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseCors("CorsPolicy");
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotifyHub>("/Notify");
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

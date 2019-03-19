@@ -1,6 +1,29 @@
 <body>
   <app-nav-menu></app-nav-menu>
+  <h1>{{notifyService.totalItems}}</h1>
   <div class="container">
-    <router-outlet></router-outlet>
+    <!-- <router-outlet></router-outlet> -->
+    <table class='table table-striped' *ngIf="NotifyModel">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Subtitle</th>
+          <th>Author</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let notify of NotifyModel.items">
+          <td>{{ notify.title }}</td>
+          <td>{{ notify.subtitle }}</td>
+          <td>{{ notify.author.name }}</td>
+          <td>{{ notify.creationDate }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
+
+
 </body>

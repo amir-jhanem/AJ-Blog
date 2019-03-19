@@ -1,10 +1,13 @@
 using System;
 using System.Threading.Tasks;
+using aj_blog.HubConfig;
 using AJ_Blog.Controllers.Resources;
 using AJ_Blog.Core;
 using AJ_Blog.Core.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+
 namespace AJ_Blog.Controllers
 {
     [Route("/api/post")]
@@ -13,13 +16,14 @@ namespace AJ_Blog.Controllers
     private readonly IMapper mapper;
     private readonly IPostRepository repository;
     private readonly IUnitOfWork unitOfWork;
-
-    public PostController(IMapper mapper, IPostRepository repository, IUnitOfWork unitOfWork)
+    private IHubContext<NotifyHub> _hub;
+    public PostController(IMapper mapper, IPostRepository repository, IUnitOfWork unitOfWork, IHubContext<NotifyHub> hub)
     {
       this.unitOfWork = unitOfWork;
       this.repository = repository;
       this.mapper = mapper;
-    }
+      _hub = hub;
+     }
 
     [HttpPost]
     public async Task<IActionResult> CreatePost([FromBody] SavePostResource postResource)
@@ -36,7 +40,8 @@ namespace AJ_Blog.Controllers
       Post = await repository.GetPost(Post.Id);
 
       var result = mapper.Map<Post, PostResource>(Post);
-
+      // var data = GetPosts(new PostQueryResource(){Page = 0,PageSize=5,SortBy="date",IsSortAscending=true});
+      await _hub.Clients.All.SendAsync("transferblogdata", result);
       return Ok(result);
     }
 
@@ -94,8 +99,11 @@ namespace AJ_Blog.Controllers
     {
       var filter = mapper.Map<PostQueryResource, PostQuery>(filterResource);
       var queryResult = await repository.GetPosts(filter);
+      var result = mapper.Map<QueryResult<Post>, QueryResultResource<PostResource>>(queryResult);
 
-      return mapper.Map<QueryResult<Post>, QueryResultResource<PostResource>>(queryResult);
+      await _hub.Clients.All.SendAsync("transferblogdata", result);
+
+      return result;
     }
     }
 }
