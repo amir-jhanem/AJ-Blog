@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "aj_blog": {
+    "vega": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -52,18 +52,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "aj_blog:build"
+            "browserTarget": "vega:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "aj_blog:build:production"
+              "browserTarget": "vega:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "aj_blog:build"
+            "browserTarget": "vega:build"
           }
         },
         "test": {
@@ -122,7 +122,7 @@
         }
       }
     },
-    "aj_blog-e2e": {
+    "vega-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -130,7 +130,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "aj_blog:serve"
+            "devServerTarget": "vega:serve"
           }
         },
         "lint": {
@@ -145,5 +145,5 @@
       }
     }
   },
-  "defaultProject": "aj_blog"
+  "defaultProject": "vega"
 }
